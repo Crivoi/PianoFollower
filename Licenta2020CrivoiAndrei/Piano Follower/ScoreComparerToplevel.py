@@ -47,7 +47,7 @@ class ScoreComparerToplevel(tk.Toplevel):
                 text1.insert(tk.INSERT, str(i + 1) + ' ' + self.stream1[i] + '\n')
                 list1notes.append(note_to_hz(self.stream1[i].split(' ')[0]))
                 list1offsets.append(self.stream1[i].split(' ')[-1])
-                text2.insert(tk.INSERT, str(i + 1) + ' ' + self.stream2[i] + ' MISTAKE ' + '\n')
+                text2.insert(tk.INSERT, str(i + 1) + ' ' + self.stream2[i] + ' Error ' + '\n')
                 list2notes.append(note_to_hz(self.stream2[i].split(' ')[0]))
                 list2offsets.append(self.stream2[i].split(' ')[-1])
             else:
@@ -65,11 +65,8 @@ class ScoreComparerToplevel(tk.Toplevel):
         plt_frame.place(relx=0, rely=1.0 / 2.5, relheight=1.5 / 2.5, relwidth=1.0)
 
         f = Figure()
-        a = f.add_subplot(211, xlabel='Offset', ylabel='Notes', ylim=(note_to_hz('B-3'), note_to_hz('B5')),
-                          xlim=(0, min(len(self.stream1), len(self.stream2))))
-        b = f.add_subplot(212, xlabel='Offset', ylabel='Notes', ylim=(note_to_hz('B-3'), note_to_hz('B5')),
-                          xlim=(0, min(len(self.stream1), len(self.stream2))))
-        # a.ylim = (note_to_hz('B0'), note_to_hz('B4'))
+        a = f.add_subplot(211, xlabel='Offset', ylabel='Notes', ylim=(note_to_hz('B-3'), note_to_hz('B5')))
+        b = f.add_subplot(212, xlabel='Offset', ylabel='Notes', ylim=(note_to_hz('B-3'), note_to_hz('B5')))
         a.plot(list1offsets, list1notes, color='green')
         b.plot(list2offsets, list2notes, color='blue')
         canvas = FigureCanvasTkAgg(f, master=plt_frame)

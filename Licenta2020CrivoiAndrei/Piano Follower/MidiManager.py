@@ -1,5 +1,6 @@
 import mido
 import music21.midi as midi
+from music21 import converter
 from ast import literal_eval
 
 
@@ -43,7 +44,6 @@ class MidiManager:
         self.m21_file.open(path, 'rb')
         self.m21_file.read()
         self.m21_file.close()
-
         stream = midi.translate.midiFileToStream(self.m21_file)
         stream.show('text')
         stream.show()

@@ -31,7 +31,7 @@ class Transcriptor:
         self.n_bins = 72
         self.mag_exp = 4
         self.pre_post_max = 6
-        self.threshold = -61
+        self.threshold = -71
 
         self.audio_sample, self.sr = self.load()
         self.cqt = self.compute_cqt()
@@ -91,7 +91,7 @@ class Transcriptor:
         plt.figure()
         librosa.display.specshow(self.thresh_cqt, sr=self.sr, hop_length=self.hop_length,
                                  x_axis='time', y_axis='cqt_note', cmap='coolwarm')
-        plt.ylim([librosa.note_to_hz('B2'), librosa.note_to_hz('B5')])
+        plt.ylim([librosa.note_to_hz('B1'), librosa.note_to_hz('B5')])
         plt.vlines(self.onsets[0], 0, self.sr / 2, color='k', alpha=0.8)
         plt.title("CQT")
         plt.colorbar()
@@ -113,7 +113,7 @@ class Transcriptor:
         f0 = f0_info[0]
         a = remap(f0_info[1], self.cqt.min(), self.cqt.max(), 0, 1)
         duration = librosa.frames_to_time(n_duration, sr=self.sr, hop_length=self.hop_length)
-        note_duration = 0.02 * np.around(duration / 2 / 0.02)  # Round to 2 decimal places for music21 compatibility
+        note_duration = 0.02 * np.around(duration / 0.02)  # Round to 2 decimal places for music21 compatibility
         midi_duration = second_to_quarter(duration, self.tempo)
         midi_velocity = int(round(remap(f0_info[1], self.cqt.min(), self.cqt.max(), 80, 120)))
         if round_to_sixteenth:
@@ -132,10 +132,11 @@ class Transcriptor:
             if f0 is None:
                 midi_note = None
                 note_info = Rest(type='32nd')
+                f0 = 0
             else:
                 midi_note = round(librosa.hz_to_midi(f0))
                 note = Note(librosa.midi_to_note(midi_note),
-                            type='16th')
+                            type='eighth')
                 note.volume.velocity = midi_velocity
                 note_info = [note]
 

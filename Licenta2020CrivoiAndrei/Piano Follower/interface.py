@@ -36,8 +36,8 @@ file.close()
 def increment_octave():
     global octave
     octave += 1
-    if octave >= 4:
-        octave = 4
+    if octave >= 6:
+        octave = 6
     print('Octave set to: ' + str(octave))
 
 
@@ -51,27 +51,34 @@ def decrement_octave():
 
 def play_note(note, mode='sa'):
     global octave
-    if mode == 'pg':
-        sound = pg.mixer.Sound('../samples/piano_notes ' + str(note) + str(octave) + '.wav')
-        sound.play()
-        sound.fadeout(150)
-        return
-    elif mode == 'sa':
-        sound = sa.WaveObject.from_wave_file('../samples/piano_notes ' + str(note) + str(octave) + '.wav')
-        sound.play()
-        return
+    try:
+        if mode == 'pg':
+            sound = pg.mixer.Sound('../samples/grand_piano_samples/piano_notes ' + str(note) + str(octave) + '.wav')
+            sound.play()
+            sound.fadeout(150)
+            return
+        elif mode == 'sa':
+            sound = sa.WaveObject.from_wave_file('../samples/grand_piano_samples/piano_notes ' + str(note) +
+                                                 str(octave) + '.wav')
+            sound.play()
+            return
+    except FileNotFoundError:
+        pass
 
 
 def play_midi(note, mode='sa'):
-    if mode == 'pg':
-        sound = pg.mixer.Sound('../samples/piano_notes ' + str(note) + '.wav')
-        sound.play()
-        sound.fadeout(150)
-        return
-    elif mode == 'sa':
-        sound = sa.WaveObject.from_wave_file('../samples/piano_notes ' + str(note) + '.wav')
-        sound.play()
-        return
+    try:
+        if mode == 'pg':
+            sound = pg.mixer.Sound('../samples/grand_piano_samples/piano_notes ' + str(note) + '.wav')
+            sound.play()
+            sound.fadeout(150)
+            return
+        elif mode == 'sa':
+            sound = sa.WaveObject.from_wave_file('../samples/grand_piano_samples/piano_notes ' + str(note) + '.wav')
+            sound.play()
+            return
+    except FileNotFoundError:
+        pass
 
 
 def label_press(event):
@@ -161,7 +168,6 @@ def midi_release(event, keys):
 
 def key_press(event):
     note = KEYS_TO_NOTES.get(event.char, None)
-    print('pressed: ' + str(note))
     info = [144, note]
     if note:
         play_note(note)
@@ -178,7 +184,6 @@ def key_press(event):
 
 def key_release(event):
     note = KEYS_TO_NOTES.get(event.char, None)
-    print('released: ' + str(note))
     info = [128, note]
     if note:
         # print(str(note) + str(octave))
@@ -194,22 +199,25 @@ def key_release(event):
 
 
 def button_press(event):
-    print("btn press")
-    if event.widget.x <= 300:
-        wave_obj = sa.WaveObject.from_wave_file('../samples/piano_notes ' + event.widget.name + str(octave) + '.wav')
-        wave_obj.play()
-        print(event.widget.name + str(octave))
-        if recording:
-            info = [144, event.widget.name + str(octave)]
-            record('../recordings/rec.txt', info)
-    else:
-        wave_obj = sa.WaveObject.from_wave_file('../samples/piano_notes ' + event.widget.name + str(octave + 1) + '.wav')
-        wave_obj.play()
-        if recording:
-            info = [144, event.widget.name + str(octave + 1)]
-            record('../recordings/rec.txt', info)
-
-    label_press(event)
+    try:
+        if event.widget.x <= 300:
+            wave_obj = sa.WaveObject.from_wave_file('../samples/grand_piano_samples/piano_notes ' + event.widget.name +
+                                                    str(octave) + '.wav')
+            wave_obj.play()
+            print(event.widget.name + str(octave))
+            if recording:
+                info = [144, event.widget.name + str(octave)]
+                record('../recordings/rec.txt', info)
+        else:
+            wave_obj = sa.WaveObject.from_wave_file('../samples/grand_piano_samples/piano_notes ' + event.widget.name +
+                                                    str(octave + 1) + '.wav')
+            wave_obj.play()
+            if recording:
+                info = [144, event.widget.name + str(octave + 1)]
+                record('../recordings/rec.txt', info)
+        label_press(event)
+    except FileNotFoundError:
+        pass
 
 
 def record_on_off(event):
@@ -270,14 +278,14 @@ def play(filename):
     note = first_line[0]
     time_scale = float(first_line[1])
     for line in song_file:
-        wave_obj = sa.WaveObject.from_wave_file('../samples/piano_notes ' + note + '.wav')
+        wave_obj = sa.WaveObject.from_wave_file('../samples/grand_piano_samples/piano_notes ' + note + '.wav')
         wave_obj.play()
         line_elements = line.split()
         note = line_elements[0]
         time = float(line_elements[1])
         t.sleep(time - time_scale)
         time_scale = time
-    wave_obj = sa.WaveObject.from_wave_file('../samples/piano_notes ' + note + '.wav')
+    wave_obj = sa.WaveObject.from_wave_file('../samples/grand_piano_samples/piano_notes ' + note + '.wav')
     wave_obj.play()
     print("Playback Stopped")
     song_file.close()
@@ -446,10 +454,8 @@ class PianoFollower(tk.Frame):
         octave_up_frame.pack_propagate(0)
         octave_up_frame.place(relx=5.0 / 6.0, y=0, relwidth=1.0 / 6.0, relheight=menu_frame.winfo_height())
 
-        img = tk.PhotoImage(file='../pictures/octave_up.gif')
         octave_up_btn = tk.Button(octave_up_frame, text="Oct\n+", bd=1, relief='raised',
                                   height=octave_up_frame['height'])
-        octave_up_btn.image = img
         octave_up_btn.name = 'octave_up'
         octave_up_btn.bind('<Button-1>', lambda event: increment_octave())
         octave_up_btn.pack(fill=tk.BOTH)
@@ -458,10 +464,8 @@ class PianoFollower(tk.Frame):
         octave_down_frame.pack_propagate(0)
         octave_down_frame.place(relx=2.0 / 3.0, y=0, relwidth=1.0 / 6.0, relheight=menu_frame.winfo_height())
 
-        img = tk.PhotoImage(file='../pictures/octave_down.gif')
         octave_down_btn = tk.Button(octave_down_frame, text='Oct\n-', bd=1, relief='raised',
                                     height=octave_down_frame['height'])
-        octave_down_btn.image = img
         octave_down_btn.name = 'octave_down'
         octave_down_btn.bind('<Button-1>', lambda event: decrement_octave())
         octave_down_btn.pack(fill=tk.BOTH)
