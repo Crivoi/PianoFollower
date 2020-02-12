@@ -27,7 +27,8 @@ class MidiManager:
                 if old_time == 0:
                     delta_time = 0
                 else:
-                    delta_time = time - old_time
+                    delta_time = round((time - old_time) / 16) * 16
+                    print(delta_time)
                 if midi_msg[0][0] == 144:
                     self.midi_track.append(mido.Message('note_on', note=midi_msg[0][1],
                                                         velocity=midi_msg[0][2],
@@ -44,6 +45,15 @@ class MidiManager:
         self.m21_file.open(path, 'rb')
         self.m21_file.read()
         self.m21_file.close()
-        stream = midi.translate.midiFileToStream(self.m21_file)
-        stream.show('text')
+        # stream = midi.translate.midiFileToStream(self.m21_file)
+        stream = converter.parse(path)
+        # stream.show('text')
         stream.show()
+
+
+def main():
+    pass
+
+
+if __name__ == '__main__':
+    main()

@@ -27,13 +27,13 @@ class PianoManagerToplevel(DefaultToplevel):
     def convert_to_midi(self):
         self.midi_object.midi_msg_to_mido_msg()
         file = filedialog.asksaveasfile(initialdir="/", title="Save file",
-                                        filetypes=(('midi files', ('*.mid', '*.midi')),
+                                        filetypes=(('midi files', '*.mid'),
                                                    ('all files', '*.*')))
 
         self.midi_object.save_midi(file.name)
 
     def convert_to_score(self):
         file_path = filedialog.askopenfilename(initialdir='/', title='Open Midi',
-                                               filetypes=(('midi files', ('*.mid', '*.midi')),
+                                               filetypes=(('midi files', '*.mid'),
                                                           ('all files', '*.*')))
         self.midi_object.convert_midi_to_stream(file_path)

@@ -27,7 +27,7 @@ class UploadToplevel(DefaultToplevel):
         wav_btn.place(x=0, y=0, relwidth=1.0 / 3.0, relheight=menu_frame.winfo_height())
 
         midi_btn = tk.Button(menu_frame, text='Import Midi', bd=2, relief='raised',
-                             command=lambda: self.upload_file(file_types=(('midi files', ('*.mid', '*.midi')),
+                             command=lambda: self.upload_file(file_types=(('midi files', '*.mid'),
                                                                           ('all files', '*.*'))))
         midi_btn.name = 'midi_btn'
         midi_btn.place(relx=1.0 / 3.0, y=0, relwidth=1.0 / 3.0, relheight=menu_frame.winfo_height())

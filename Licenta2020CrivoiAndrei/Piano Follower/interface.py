@@ -36,8 +36,8 @@ file.close()
 def increment_octave():
     global octave
     octave += 1
-    if octave >= 6:
-        octave = 6
+    if octave >= 7:
+        octave = 7
     print('Octave set to: ' + str(octave))
 
 
@@ -151,7 +151,7 @@ def midi_press(event, keys):
 def midi_release(event, keys):
     note = MIDI_TO_NOTES.get(event[0][1])
     if note:
-        print(str(note))
+        print(note)
         if recording:
             record_midi('../recordings/midi_rec.txt', event)
         if len(note) == 2:
@@ -186,7 +186,7 @@ def key_release(event):
     note = KEYS_TO_NOTES.get(event.char, None)
     info = [128, note]
     if note:
-        # print(str(note) + str(octave))
+        print(str(note) + str(octave))
         if recording:
             record('../recordings/rec.txt', info)
         if len(note) == 1:
@@ -221,17 +221,21 @@ def button_press(event):
 
 
 def record_on_off(event):
-    global recording
+    global recording, start
     recording = not recording
     print('Recording: ', recording)
     if recording:
+        song_file = open('../recordings/rec.txt', 'w')
+        song_file.close()
+        song_file = open('../recordings/midi_rec.txt', 'w')
+        song_file.close()
+        start = t.time()
         label_press(event)
     else:
         label_release(event)
 
 
 def record(filename, info):
-    print("info: " + str(info))
     song_file = open(filename, 'a')
     note = info[1]
     msg_type = info[0]
@@ -262,7 +266,6 @@ def record(filename, info):
 
 
 def record_midi(filename, msg):
-    print(type(msg))
     midi_file = open(filename, 'a')
     midi_file.write(str(msg) + '\n')
     if msg[0][0] == 144:
@@ -317,7 +320,7 @@ KEYS_TO_NOTES = {
 }
 
 NOTES = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-OCTAVES = ['1', '2', '3', '4']
+OCTAVES = ['1', '2', '3', '4', '5', '6', '7']
 counter = 24
 
 MIDI_TO_NOTES = {}
@@ -367,7 +370,6 @@ class PianoFollower(tk.Frame):
     def midi_handle(self):
         if self.midi_input.poll():
             midi_events = self.midi_input.read(1)[0]
-            print(midi_events)
             if midi_events[0][0] == 144:
                 midi_press(midi_events, self.parent.keys)
             elif midi_events[0][0] == 128:

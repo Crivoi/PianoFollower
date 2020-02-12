@@ -65,10 +65,12 @@ class ScoreComparerToplevel(tk.Toplevel):
         plt_frame.place(relx=0, rely=1.0 / 2.5, relheight=1.5 / 2.5, relwidth=1.0)
 
         f = Figure()
-        a = f.add_subplot(211, xlabel='Offset', ylabel='Notes', ylim=(note_to_hz('B-3'), note_to_hz('B5')))
-        b = f.add_subplot(212, xlabel='Offset', ylabel='Notes', ylim=(note_to_hz('B-3'), note_to_hz('B5')))
+        a = f.add_subplot(211, xlabel='Offset', ylabel='Notes', ylim=(min(list1notes), max(list1notes)))
+        b = f.add_subplot(212, xlabel='Offset', ylabel='Notes', ylim=(min(list2notes), max(list2notes)))
         a.plot(list1offsets, list1notes, color='green')
+        a.vlines(list1offsets, ymin=note_to_hz('B0'), ymax=note_to_hz('B5'))
         b.plot(list2offsets, list2notes, color='blue')
+        b.vlines(list2offsets, ymin=note_to_hz('B0'), ymax=note_to_hz('B5'))
         canvas = FigureCanvasTkAgg(f, master=plt_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -79,9 +81,9 @@ def main():
     stream1 = []
     stream2 = []
 
-    # score = m21.converter.parse('C:\\Users\\Lenovo\\Desktop\\sc.mxl')
-    score2 = m21.corpus.parse('bwv66.6')
-    score = m21.corpus.parse('bwv67.4')
+    score = m21.converter.parse('C:\\Users\\Lenovo\\Desktop\\rec4.mxl')
+    score2 = m21.converter.parse('C:\\Users\\Lenovo\\Desktop\\rec4.mxl')
+    # score = m21.corpus.parse('bwv67.4')
 
     for note in score.flat.notes:
         stream1.append(str(note.pitch) + ' ' + str(note.offset))

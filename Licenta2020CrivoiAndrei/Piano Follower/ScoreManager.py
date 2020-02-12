@@ -23,7 +23,7 @@ class ScoreManager:
     def convert_stream_to_midi(self):
         midi_file = m21.midi.translate.streamToMidiFile(self.score_obj)
         filename = filedialog.asksaveasfilename(initialdir="/", title="Save Midi File",
-                                                filetypes=('midi files', ('*.mid', '*.midi')))
+                                                filetypes=('midi files', '*.mid'))
         midi_file.open(filename, 'wb')
         midi_file.write()
         midi_file.close()
@@ -51,8 +51,7 @@ class ScoreManager:
 
 
 def main():
-    s = ScoreManager('C:/users/Lenovo/Desktop/sc.mxl')
-    s.compare('sc.mxl')
+    pass
 
 
 if __name__ == '__main__':
