@@ -91,7 +91,7 @@ class Transcriptor:
         plt.figure()
         librosa.display.specshow(self.thresh_cqt, sr=self.sr, hop_length=self.hop_length,
                                  x_axis='time', y_axis='cqt_note', cmap='coolwarm')
-        plt.ylim([librosa.note_to_hz('B1'), librosa.note_to_hz('B5')])
+        plt.ylim([librosa.note_to_hz('B2'), librosa.note_to_hz('B5')])
         plt.vlines(self.onsets[0], 0, self.sr / 2, color='k', alpha=0.8)
         plt.title("CQT")
         plt.colorbar()
